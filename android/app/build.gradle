@@ -1,7 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+}
 
 def rootCMakeLists = "../../CMakeLists.txt"
 def rootCMakeListsContent = file(rootCMakeLists).text
@@ -18,11 +20,14 @@ def chiakiVersion = "$chiakiVersionMajor.$chiakiVersionMinor.$chiakiVersionPatch
 println("Determined Chiaki Version: $chiakiVersion")
 
 android {
-    compileSdkVersion 34
+    namespace "com.metallic.chiaki"
+    compileSdk 34
+    ndkVersion "28.2.13676358"
+
     defaultConfig {
         applicationId "com.metallic.chiaki"
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdk 24
+        targetSdk 34
         versionCode 12
         versionName chiakiVersion
         externalNativeBuild {
@@ -44,25 +49,33 @@ android {
             }
         }
     }
+
     buildFeatures {
         viewBinding true
+        prefab true
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
+        freeCompilerArgs += "-opt-in=kotlin.ExperimentalUnsignedTypes"
     }
+
     externalNativeBuild {
         cmake {
             version "3.22.1"
             path rootCMakeLists
         }
     }
+
     signingConfigs {
         release
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -70,14 +83,13 @@ android {
         }
     }
 
-
     Properties properties = new Properties()
     def propertiesFile = file("../local.properties")
     if (propertiesFile.exists()) {
         properties.load(propertiesFile.newDataInputStream())
     }
 
-	if(properties.containsKey("chiakiKeystore")) {
+    if(properties.containsKey("chiakiKeystore")) {
         println("Enabling Local Signing")
         buildTypes.release.signingConfig = signingConfigs.release
         buildTypes.debug.signingConfig = signingConfigs.release
@@ -88,21 +100,10 @@ android {
     } else {
         println("Signing not enabled")
     }
-
-    buildFeatures{
-        prefab true
-    }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        freeCompilerArgs += "-opt-in=kotlin.ExperimentalUnsignedTypes"
-    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -119,7 +120,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
-    implementation "com.squareup.moshi:moshi:1.14.0"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.14.0"
+    implementation "com.squareup.moshi:moshi:1.15.2"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.15.2"
     implementation "com.google.oboe:oboe:1.9.3"
 }
