@@ -21,13 +21,13 @@ println("Determined Chiaki Version: $chiakiVersion")
 
 android {
     namespace "com.metallic.chiaki"
-    compileSdk 34
+    compileSdk 35
     ndkVersion "28.2.13676358"
 
     defaultConfig {
         applicationId "com.metallic.chiaki"
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionCode 12
         versionName chiakiVersion
         externalNativeBuild {
@@ -102,8 +102,28 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        // Pin lifecycle to 2.5.1 for Phase 1a-1c to preserve RxLiveData compatibility.
+        // Phase 3 will remove RxJava and unblock bumping lifecycle to current stable.
+        force 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
+        force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+        force 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1'
+        force 'androidx.lifecycle:lifecycle-livedata:2.5.1'
+        force 'androidx.lifecycle:lifecycle-livedata-core:2.5.1'
+        force 'androidx.lifecycle:lifecycle-livedata-core-ktx:2.5.1'
+        force 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+        force 'androidx.lifecycle:lifecycle-reactivestreams:2.5.1'
+        force 'androidx.lifecycle:lifecycle-runtime:2.5.1'
+        force 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+        force 'androidx.lifecycle:lifecycle-common:2.5.1'
+        force 'androidx.lifecycle:lifecycle-process:2.5.1'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
