@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,8 +31,9 @@ import com.metallic.chiaki.session.*
 import com.metallic.chiaki.touchcontrols.DefaultTouchControlsFragment
 import com.metallic.chiaki.touchcontrols.TouchControlsFragment
 import com.metallic.chiaki.touchcontrols.TouchpadOnlyFragment
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlin.math.min
 
 private sealed class DialogContents
@@ -134,16 +136,17 @@ class StreamActivity : AppCompatActivity()
 		}
 	}
 
-	private val controlsDisposable = CompositeDisposable()
+	private var controlsJob: Job? = null
 
 	override fun onAttachFragment(fragment: Fragment)
 	{
 		super.onAttachFragment(fragment)
 		if(fragment is TouchControlsFragment)
 		{
-			fragment.controllerState
-				.subscribe { viewModel.input.touchControllerState = it }
-				.addTo(controlsDisposable)
+			controlsJob?.cancel()
+			controlsJob = fragment.controllerState
+				.onEach { viewModel.input.touchControllerState = it }
+				.launchIn(lifecycleScope)
 			fragment.onScreenControlsEnabled = viewModel.onScreenControlsEnabled
 			if(fragment is TouchpadOnlyFragment)
 				fragment.touchpadOnlyEnabled = viewModel.touchpadOnlyEnabled
@@ -166,7 +169,7 @@ class StreamActivity : AppCompatActivity()
 	override fun onDestroy()
 	{
 		super.onDestroy()
-		controlsDisposable.dispose()
+		controlsJob?.cancel()
 	}
 
 	private fun reconnect()

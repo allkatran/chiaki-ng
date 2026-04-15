@@ -102,44 +102,22 @@ android {
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        // Pin lifecycle to 2.5.1 for Phase 1a-1c to preserve RxLiveData compatibility.
-        // Phase 3 will remove RxJava and unblock bumping lifecycle to current stable.
-        force 'androidx.lifecycle:lifecycle-viewmodel:2.5.1'
-        force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-        force 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1'
-        force 'androidx.lifecycle:lifecycle-livedata:2.5.1'
-        force 'androidx.lifecycle:lifecycle-livedata-core:2.5.1'
-        force 'androidx.lifecycle:lifecycle-livedata-core-ktx:2.5.1'
-        force 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-        force 'androidx.lifecycle:lifecycle-reactivestreams:2.5.1'
-        force 'androidx.lifecycle:lifecycle-runtime:2.5.1'
-        force 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
-        force 'androidx.lifecycle:lifecycle-common:2.5.1'
-        force 'androidx.lifecycle:lifecycle-process:2.5.1'
-    }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.activity:activity-ktx:1.9.3'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-    implementation 'androidx.preference:preference:1.2.0'
-    implementation 'com.google.android.material:material:1.8.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.5.1'
-    implementation "io.reactivex.rxjava2:rxjava:2.2.20"
-    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    def room_version = "2.5.0"
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.7'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    def room_version = "2.6.1"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-rxjava2:$room_version"
     implementation "com.squareup.moshi:moshi:1.15.2"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.15.2"
     implementation "com.google.oboe:oboe:1.9.3"
